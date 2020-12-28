@@ -10,19 +10,31 @@ if (isset($_POST["content"])) {
 ?>
 <h2> Roswell </h2>
 <?php
+
 $directory = opendir("files/roswell");
 
 while ($handledFile = readdir($directory)) {
     if (!in_array($handledFile, [".", "..",])) {
+        $extension = pathinfo($handledFile, PATHINFO_EXTENSION);
         ?>
-            <ul>
+        <ul>
+            <?php
+        if ($extension == "txt" || $extension == "html") {
+        ?>
                 <li>
-                    <a href="?f=<?=$handledFile?>">
-                        <?= $handledFile?>
+                    <?= $handledFile?>
+                    <a href="?f=<?= "roswell/".$handledFile?>"> Edit
                     </a>
                 </li>
             </ul>
-        <?php
+        <?php } else { ?>
+            <li>
+                    <?= $handledFile?>
+            </li>
+
+                <?php
+        }
+        ?> </ul> <?php
     }
 
 }
@@ -36,8 +48,8 @@ while ($handledFile = readdir($directory)) {
         ?>
         <ul>
             <li>
-                <a href="?f=<?=$handledFile?>">
-                    <?= $handledFile?>
+                <?= $handledFile?>
+                <a href="?f=<?="uk/".$handledFile?>"> Edit
                 </a>
             </li>
         </ul>
@@ -47,7 +59,7 @@ while ($handledFile = readdir($directory)) {
 ?>
 <?php
 if(isset($_GET["f"])) {
-    $file = "files/uk/".$_GET["f"];
+    $file = "files/".$_GET["f"];
     $content = file_get_contents($file);
 ?>
 
