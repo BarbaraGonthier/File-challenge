@@ -7,8 +7,30 @@ if (isset($_POST["content"])) {
     fclose($handledFile);
 }
 
+if (isset($_GET['deletedir'])) {
+        rmdir($_GET['deletedir']);
+        header('Location: /index.php');
+    }
+
+if (isset($_GET['delete'])) {
+    unlink($_GET['delete']);
+    header('Location: /index.php');
+}
+
 ?>
-<h2> Roswell </h2>
+<h2> Directories</h2>
+
+<?php
+$directory = opendir("./files");
+while($handledFile = readdir($directory)) {
+    if (!in_array($handledFile, array(".",".."))) {
+        echo $handledFile." ";
+    }
+}
+?>
+<br/>
+    <a href="?deletedir=<?="files/test"?>"> delete empty test repertory </a>
+    <h2> Roswell </h2>
 <?php
 
 $directory = opendir("files/roswell");
@@ -25,6 +47,8 @@ while ($handledFile = readdir($directory)) {
                     <?= $handledFile?>
                     <a href="?f=<?= "roswell/".$handledFile?>"> Edit
                     </a>
+                    <a href="?delete=<?= "roswell/".$handledFile?>"> delete
+                    </a>
                 </li>
             </ul>
         <?php } else { ?>
@@ -39,6 +63,42 @@ while ($handledFile = readdir($directory)) {
 
 }
 ?>
+
+<h2> Test </h2>
+<?php
+
+$directory = opendir("files/test");
+
+while ($handledFile = readdir($directory)) {
+    if (!in_array($handledFile, [".", "..",])) {
+        $extension = pathinfo($handledFile, PATHINFO_EXTENSION);
+        ?>
+        <ul>
+        <?php
+        if ($extension == "txt" || $extension == "html") {
+            ?>
+            <li>
+                <?= $handledFile?>
+                <a href="?f=<?= "test/".$handledFile?>"> Edit
+                </a>
+                <a href="?delete=<?= "files/test/".$handledFile?>"> delete
+                </a>
+            </li>
+            </ul>
+        <?php } else { ?>
+            <li>
+                <?= $handledFile?>
+            </li>
+
+            <?php
+        }
+        ?> </ul> <?php
+    }
+
+}
+?>
+
+
     <h2> Uk </h2>
 <?php
 $directory = opendir("files/uk");
@@ -57,6 +117,7 @@ while ($handledFile = readdir($directory)) {
     }
 }
 ?>
+
 <?php
 if(isset($_GET["f"])) {
     $file = "files/".$_GET["f"];
